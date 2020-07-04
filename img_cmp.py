@@ -1,9 +1,10 @@
 import cv2
-
+import os
+from feature_utils import *
+from urllib.parse import unquote
 
 fast = cv2.ORB_create()
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-
 
 def cmpImage(cmpim, dlist, portal_list):
     ks, des = fast.detectAndCompute(cmpim, None)
@@ -21,11 +22,6 @@ def cmpImage(cmpim, dlist, portal_list):
     print("Lat: " + portal_list[pic_match[0]["id"]]["Latitude"])
     print("Lng: " + portal_list[pic_match[0]["id"]]["Longitude"])
 
-    rdimg = cv2.imread("data/" + str(pic_match[0]["id"]) + ".jpg")
-    # cv2.imshow("Result1", cmpim)
-    # cv2.imshow("Result2", rdimg)
-    # cv2.waitKey(9999)
-
     valid = True
     if pic_match[0]["matches"] < 200:
         valid = False
@@ -38,8 +34,6 @@ def get_features(pid):
     if not os.path.exists('data_feature/' + str(pid) + ".jpg.npy"):
         img = cv2.imread('data/' + str(pid) + ".jpg", 0)
         kp, des = fast.detectAndCompute(img, None)
-        # img = cv2.drawKeypoints(img, kp, np.array([]))
-        # cv2.imshow("Image", img)
         kpp, desp = pack_keypoint(kp, des)
         write_features('data_feature/' + str(pid) + ".jpg", kpp, desp)
     else:

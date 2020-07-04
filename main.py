@@ -1,17 +1,11 @@
-import os
 from multiprocessing.pool import ThreadPool
-import csv
 import cv2
-import numpy as np
-import pickle
-import time
-from os import listdir
-from os.path import isfile, join
-from urllib.parse import unquote
 import json
+
 from feature_utils import *
 from download_utils import *
 from img_finder import *
+from img_cmp import *
 from geo import geo
 
 def main():
