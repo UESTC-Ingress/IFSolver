@@ -2,6 +2,62 @@
 
 A tool to find passcodes of IFS @ Home.
 
+## Preview
+
+### Image Match
+
+![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/result.jpg)
+
+### Passcode
+
+![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/code.jpg)
+
+### Log
+
+```
+......
+Result for pic 911
+Total Keys: 500
+Max Match Keys: 1012
+Matches: 347
+Portal Name: Chinese Academy of Science
+Lat: 30.63279
+Lng: 104.071148
+----------------------------
+Result for pic 912
+Total Keys: 487
+Max Match Keys: 172
+Matches: 344
+Portal Name: 汉易酒店狮
+Lat: 30.616864
+Lng: 104.070239
+----------------------------
+Result for pic 935
+Total Keys: 500
+Max Match Keys: 609
+Matches: 346
+Portal Name: 四脚蛇
+Lat: 30.628775
+Lng: 104.086282
+----------------------------
+Result for pic 936
+Total Keys: 479
+Max Match Keys: 1219
+Matches: 288
+Portal Name: 浮雕5
+Lat: 30.637155
+Lng: 104.081622
+----------------------------
+Result for pic 1171
+Total Keys: 500
+Max Match Keys: 867
+Matches: 356
+Portal Name: 川大花园
+Lat: 30.625708
+Lng: 104.076478
+.......
+```
+
 ## Usage
 
 ### Step 1:
