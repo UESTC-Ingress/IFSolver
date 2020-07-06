@@ -9,7 +9,7 @@ def geo():
     ks = list(data.keys())
     ks = list(map(int, ks))
     ks.sort()
-    rimg = np.zeros((640, 640, 3), np.uint8)
+    rimg = np.zeros((640, 1, 3), np.uint8)
     for kid, k in enumerate(ks):
         row = data[str(k)]
         img = np.zeros((640, 640, 3), np.uint8)
@@ -26,7 +26,7 @@ def geo():
             x = int(x)
             y = float(p["lat"])
             y = ((y - latmin) / lats) * 600 + 20
-            y = int(y)
+            y = 640 - int(y)
             if idx != 0:
                 print("from x " + str(x) + " y " + str(y))
                 print("to x " + str(ox) + " y " + str(oy))
