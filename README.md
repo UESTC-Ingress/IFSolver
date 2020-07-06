@@ -60,11 +60,17 @@ Lng: 104.076478
 
 ## Usage
 
+> Notice: Features of nearby portals can be pregenerated without put `ifs.png` in the directory. 
+
+> You can prepare for this part once the IFS portal is determined to reduce the time of processing when the IFS Challenge image is available.
+
 ### Step 1:
 
 Use `IITC Plugin: Ingress Portal CSV Export` to download portal list. And put it in the project directory as `Portal_Export.csv`.
 
 ### Step 2:
+
+Put IFS Challenge image at the project directory as `ifs.png`. (Please use raw PNG instead of JPG to avoid noise caused by compression)
 
 Use `python3 main.py`.
 
@@ -88,3 +94,5 @@ _, infile_bw = cv2.threshold(infile_gradient, 15, 255, cv2.THRESH_BINARY)
 ```
 if pic_match[0]["matches"] < 200:
 ```
+
+You can use `python3 test.py` to test if all portal images are matched correctly.
