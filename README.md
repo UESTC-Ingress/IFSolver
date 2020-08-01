@@ -10,31 +10,31 @@ A tool to find passcodes of IFS @ Home.
 
 This step is to check the splitting of images.
 
-![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/result_pre.jpg)
+![image](/doc/result_pre.jpg)
 
 #### Step 2
 
 This step is to manually merge images.
 
-![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/result_raw.jpg)
+![image](/doc/result_raw.jpg)
 
 #### Step 3
 
 Result of matching.
 
-![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/result.jpg)
+![image](/doc/result.jpg)
 
 #### Optional
 
 There is a `cmp` dir for debugging.
 
-![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/cmp.jpg)
+![image](/doc/cmp.jpg)
 
 ### Passcode
 
 Red points are portals with matching errors.
 
-![image](http://github.com/UESTC-Ingress/IFSolver/raw/master/doc/result_full.jpg)
+![image](/doc/result_full.jpg)
 
 ### Log
 
