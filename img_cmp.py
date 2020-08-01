@@ -6,6 +6,7 @@ from urllib.parse import unquote
 fast = cv2.ORB_create()
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
+
 def cmpImage(cmpim, dlist, portal_list):
     ks, des = fast.detectAndCompute(cmpim, None)
     pic_match = []
@@ -21,6 +22,14 @@ def cmpImage(cmpim, dlist, portal_list):
                                     ["Name"], encoding='utf-8', errors='replace'))
     print("Lat: " + portal_list[pic_match[0]["id"]]["Latitude"])
     print("Lng: " + portal_list[pic_match[0]["id"]]["Longitude"])
+
+    store_im = cmpim.copy()
+    match_im = cv2.imread("data/" + str(pic_match[0]["id"]) + ".jpg")
+    matchx,matchy,_ = store_im.shape
+    match_im = cv2.resize(match_im,(matchy,matchx))
+    store_im = np.hstack((store_im, match_im))
+    cv2.imwrite("cmp/" + unquote(portal_list[pic_match[0]["id"]]
+                        ["Name"], encoding='utf-8', errors='replace') + ".jpg", store_im)
 
     valid = True
     if pic_match[0]["matches"] < 200:

@@ -2,6 +2,8 @@ import requests
 import os
 import csv
 
+from multiprocessing.pool import ThreadPool
+
 def fetch_url(entry):
     ret = ""
     path = 'data/' + str(entry["id"]) + ".jpg"
@@ -24,3 +26,13 @@ def getPortals(portals_file):
             portal_list.append(row)
             cnt = cnt + 1
     return portal_list
+
+def main():
+    portal_list = getPortals("Portal_Export.csv")
+    run = ThreadPool(12).imap_unordered(fetch_url, portal_list)
+    for res in run:
+        if res != "":
+            print(res)
+
+if __name__ == "__main__":
+    main()

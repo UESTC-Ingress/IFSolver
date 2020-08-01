@@ -19,7 +19,7 @@ def geo():
         lngmin = min(tmplng)
         lats = max(tmplat) - latmin
         lngs = max(tmplng) - lngmin
-        row = sorted(row, key=lambda k: k['y']) 
+        row = sorted(row, key=lambda k: k['y'])
         for idx, p in enumerate(row):
             x = float(p["lng"])
             x = ((x - lngmin) / lngs) * 600 + 20
@@ -27,6 +27,10 @@ def geo():
             y = float(p["lat"])
             y = ((y - latmin) / lats) * 600 + 20
             y = 640 - int(y)
+            color = (0, 255, 0)
+            if not p["valid"]:
+                color = (0, 0, 255)
+            cv2.circle(img,  (x, y), 8, color, 4)
             if idx != 0:
                 print("from x " + str(x) + " y " + str(y))
                 print("to x " + str(ox) + " y " + str(oy))
@@ -37,7 +41,7 @@ def geo():
         #cv2.imshow("test", img)
         cv2.imwrite("result_" + str(kid) + "_" + str(k) + ".jpg", img)
         rimg = np.hstack((rimg, img))
-        #cv2.waitKey(999)
+        # cv2.waitKey(999)
     cv2.imwrite("result_full.jpg", rimg)
 
 

@@ -134,3 +134,5 @@ dmypy.json
 *.csv
 data*
 ifsimg/
+
+cmp/
