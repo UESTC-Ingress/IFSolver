@@ -82,13 +82,17 @@ Lng: 104.076834
 
 ### Pre-generate
 
-If no puzzle image is placed, the program will only extract features from portal images, it can be processed before IFS! 
+> Notice: Features of nearby portals can be pregenerated without put `ifs.png` in the directory. 
+
+> You can prepare for this part once the IFS portal is determined to reduce the time of processing when the IFS Challenge image is available.
 
 ### Step 1:
 
 Use `IITC Plugin: Ingress Portal CSV Export` to download portal list. And put it in the project directory as `Portal_Export.csv`.
 
 ### Step 2:
+
+Put IFS Challenge image at the project directory as `ifs.png`. (Please use raw PNG instead of JPG to avoid noise caused by compression)
 
 Use `python3 main.py`.
 
