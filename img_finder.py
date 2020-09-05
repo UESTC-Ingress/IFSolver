@@ -11,7 +11,7 @@ def pre_process(infile, mat_size, thres):
 
 
 def process_mainfile(mat_size, thres):
-    img = cv2.imread('ifs.png', cv2.IMREAD_UNCHANGED)
+    img = cv2.imread('ifs.jpg', cv2.IMREAD_UNCHANGED)
     conts = pre_process(img, int(mat_size), int(thres))
     img_s = img.copy()
     for f in conts:

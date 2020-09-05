@@ -92,7 +92,7 @@ Use `IITC Plugin: Ingress Portal CSV Export` to download portal list. And put it
 
 ### Step 2:
 
-Put IFS Challenge image at the project directory as `ifs.png`. (Please use raw PNG instead of JPG to avoid noise caused by compression)
+Put IFS Challenge image at the project directory as `ifs.jpg`.
 
 Use `python3 main.py`.
 
