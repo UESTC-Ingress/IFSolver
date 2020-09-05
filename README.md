@@ -82,13 +82,13 @@ Lng: 104.076834
 
 ### Pre-generate
 
-> Notice: Features of nearby portals can be pregenerated without put `ifs.png` in the directory. 
+> Notice: Features of nearby portals can be pregenerated without put `ifs.jpg` in the directory. 
 
 > You can prepare for this part once the IFS portal is determined to reduce the time of processing when the IFS Challenge image is available.
 
 ### Step 1:
 
-Use `IITC Plugin: Ingress Portal CSV Export` to download portal list. And put it in the project directory as `Portal_Export.csv`.
+Use `IITC Plugin: Ingress Portal CSV Export` ([link](https://github.com/Zetaphor/IITC-Ingress-Portal-CSV-Export)) to download portal list. And put it in the project directory as `Portal_Export.csv`.
 
 ### Step 2:
 
