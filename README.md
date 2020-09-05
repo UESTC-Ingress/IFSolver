@@ -14,12 +14,6 @@ This step is to check the splitting of images.
 
 #### Step 2
 
-This step is to manually merge images.
-
-![image](/doc/result_raw.jpg)
-
-#### Step 3
-
 Result of matching.
 
 ![image](/doc/result.jpg)
@@ -45,11 +39,6 @@ Red points are portals with matching errors.
 Matrix Size: 2
 Thres: 10
 Please check result_pre.jpg, is it correct? (y/n)y
-Please check result_raw.jpg, is it correct? (y/n)n
-[IFSolver] Start fixing.
-Image ID 1: 15907 
-Image ID 2: 14840
-Please check result_raw.jpg, is it correct? (y/n)y
 [IFSolver] Comparing pictures
 Result for pic 0
 Total Keys: 500
@@ -102,8 +91,6 @@ Follow the guide.
 
 You may need to change `matrix_size` and `threshold`.
 
-You may need to select some image boxes to merge.
-
 ### Step 4:
 
 The matched image is `result.jpg`.
@@ -113,7 +100,5 @@ The passcode image is `result_full.jpg`.
 ### Optional:
 
 `download_utils.py` can run independently if there is a `Portal_Export.csv`.
-
-`fix.py` can run independently if there is a `result_pics.json`.
 
 `geo.py` can run independently if there is a `result.json`.

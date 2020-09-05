@@ -8,7 +8,6 @@ from download_utils import *
 from img_finder import *
 from img_cmp import *
 from geo import geo
-from fix import *
 
 def create_dir():
     if not path.exists('data'):
@@ -40,7 +39,7 @@ def main_features(portal_list):
         exit()
     return dlist
 
-def main_preextract(mat_size=2, thres=10):
+def main_preextract(mat_size=2, thres=5):
     psf = process_mainfile(mat_size, thres)
     print("Matrix Size: " + str(mat_size))
     print("Thres: " + str(thres))
@@ -56,29 +55,11 @@ def main_extract(img,cnts):
     print("[IFSolver] Extracting pictures")
     row = {}
     bds = []
-    if not path.exists("result_pics.json"):
-        for idx, f in enumerate(cnts):
-            (x, y, w, h) = cv2.boundingRect(f)
-            if (w*h > 40000):
-                bds.append({"idx": idx, "bd": (x, y, w, h)})
-        with open('result_pics.json', 'w') as fp:
-            json.dump(bds, fp)
-    else:
-        with open("result_pics.json", 'r') as fp:
-            bds = json.loads(fp.read())
-    img_s = img.copy()
-    for f in bds:
-        (x, y, w, h) = f["bd"]
-        cv2.rectangle(img_s, (x, y), (x+w, y+h), (0, 0, 255), 5)
-        cv2.putText(img_s, '#' + str(f["idx"]), (x, y + 40),
-                    cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
-    cv2.imwrite("result_raw.jpg", img_s)
-    p = input("Please check result_raw.jpg, is it correct? (y/n)")
-    if p != "y":
-        fix_p()
-        return main_extract(img,cnts)
-    else:
-        return img, bds, row
+    for idx, f in enumerate(cnts):
+        (x, y, w, h) = cv2.boundingRect(f)
+        if (w*h > 40000):
+            bds.append({"idx": idx, "bd": (x, y, w, h)})
+    return img, bds, row
 
 def main_fix():
     img, cnts = main_preextract()
