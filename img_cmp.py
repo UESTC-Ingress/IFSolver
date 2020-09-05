@@ -7,6 +7,13 @@ fast = cv2.ORB_create()
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
 
+def unquote_u(string: str):
+    result = unquote(string, encoding='utf-8', errors='replace')
+    if '%u' in result:
+        result = result.replace('%u', '\\u').encode("utf-8").decode('unicode_escape')
+    return result
+
+
 def cmpImage(cmpim, dlist, portal_list):
     ks, des = fast.detectAndCompute(cmpim, None)
     pic_match = []
@@ -18,8 +25,7 @@ def cmpImage(cmpim, dlist, portal_list):
     print("Total Keys: " + str(len(ks)))
     print("Max Match Keys: " + str(pic_match[0]["id"]))
     print("Matches: " + str(pic_match[0]["matches"]))
-    print("Portal Name: " + unquote(portal_list[pic_match[0]["id"]]
-                                    ["Name"], encoding='utf-8', errors='replace'))
+    print("Portal Name: " + unquote_u(portal_list[pic_match[0]["id"]]["Name"]))
     print("Lat: " + portal_list[pic_match[0]["id"]]["Latitude"])
     print("Lng: " + portal_list[pic_match[0]["id"]]["Longitude"])
 
@@ -28,15 +34,17 @@ def cmpImage(cmpim, dlist, portal_list):
     matchx, matchy, _ = store_im.shape
     match_im = cv2.resize(match_im, (matchy, matchx))
     store_im = np.hstack((store_im, match_im))
-    cv2.imwrite("cmp/" + unquote(portal_list[pic_match[0]["id"]]
-                                 ["Name"], encoding='utf-8', errors='replace') + ".jpg", store_im)
+    cv2.imwrite("cmp/" + unquote_u(portal_list[pic_match[0]["id"]]["Name"])
+                + ".jpg", store_im)
 
     valid = True
     if pic_match[0]["matches"] < 200:
         valid = False
 
-    return unquote(portal_list[pic_match[0]["id"]]
-                   ["Name"], encoding='utf-8', errors='replace'), portal_list[pic_match[0]["id"]]["Latitude"], portal_list[pic_match[0]["id"]]["Longitude"], valid
+    return (unquote_u(portal_list[pic_match[0]["id"]]["Name"]),
+            portal_list[pic_match[0]["id"]]["Latitude"],
+            portal_list[pic_match[0]["id"]]["Longitude"],
+            valid)
 
 
 def get_features(pid):
