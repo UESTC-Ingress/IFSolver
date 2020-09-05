@@ -1,6 +1,6 @@
 from multiprocessing.pool import ThreadPool
 import cv2
-from os import path
+from os import path, makedirs
 import json
 
 from feature_utils import *
@@ -9,6 +9,16 @@ from img_finder import *
 from img_cmp import *
 from geo import geo
 from fix import *
+
+def create_dir():
+    if not path.exists('data'):
+        os.makedirs('data')
+    if not path.exists('data_feature'):
+        os.makedirs('data_feature')
+    if not path.exists('data_feature_preview'):
+        os.makedirs('data_feature_preview')
+    if not path.exists('cmp'):
+        os.makedirs('cmp')
 
 def main_download():
     print("[IFSolver] Downloading latest intel package")
@@ -118,4 +128,5 @@ def main():
     geo()
 
 if __name__ == "__main__":
+    create_dir()
     main()
