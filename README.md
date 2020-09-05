@@ -88,7 +88,7 @@ Lng: 104.076834
 
 ### Step 1:
 
-Use `IITC Plugin: Ingress Portal CSV Export` to download portal list. And put it in the project directory as `Portal_Export.csv`.
+Use [IITC Plugin: Ingress Portal CSV Export](https://github.com/Zetaphor/IITC-Ingress-Portal-CSV-Export) to download portal list. And put it in the project directory as `Portal_Export.csv`.
 
 ### Step 2:
 
