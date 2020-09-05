@@ -22,9 +22,10 @@ def getPortals(portals_file):
     with open(portals_file, encoding="utf-8", newline='') as csvfile:
         portal_reader = csv.DictReader(csvfile, skipinitialspace=True)
         for row in portal_reader:
-            row['id'] = cnt
-            portal_list.append(row)
-            cnt = cnt + 1
+            if row["Image"]:
+                row['id'] = cnt
+                portal_list.append(row)
+                cnt = cnt + 1
     return portal_list
 
 def main():
