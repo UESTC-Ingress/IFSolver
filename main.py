@@ -35,8 +35,8 @@ def main_features(portal_list):
     for portal in portal_list:
         _, d = get_features(portal['id'])
         dlist.append(d)
-    if not path.exists("ifs.png"):
-        print("[IFSolver] No IFS png found, exit")
+    if not path.exists("ifs.jpg"):
+        print("[IFSolver] No IFS jpg found, exit")
         exit()
     return dlist
 
