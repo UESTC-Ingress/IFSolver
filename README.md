@@ -82,7 +82,7 @@ Lng: 104.076834
 
 ### Pre-generate
 
-> Notice: Features of nearby portals can be pregenerated without put `ifs.png` in the directory. 
+> Notice: Features of nearby portals can be pregenerated without put `ifs.jpg` in the directory. 
 
 > You can prepare for this part once the IFS portal is determined to reduce the time of processing when the IFS Challenge image is available.
 
