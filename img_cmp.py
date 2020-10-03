@@ -34,8 +34,8 @@ def cmpImage(cmpim, dlist, portal_list):
     matchx, matchy, _ = store_im.shape
     match_im = cv2.resize(match_im, (matchy, matchx))
     store_im = np.hstack((store_im, match_im))
-    cv2.imwrite("cmp/" + unquote_u(portal_list[pic_match[0]["id"]]["Name"])
-                + ".jpg", store_im)
+    cv2.imencode('.jpg', store_im)[1].tofile(
+        "cmp/" + unquote_u(portal_list[pic_match[0]["id"]]["Name"]) + ".jpg")
 
     valid = True
     if pic_match[0]["matches"] < 200:
