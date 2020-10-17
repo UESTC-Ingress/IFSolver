@@ -29,6 +29,9 @@ def getPortals(portals_file):
     return portal_list
 
 def main():
+    if not os.path.exists('data'):
+        os.makedirs('data')
+
     portal_list = getPortals("Portal_Export.csv")
     run = ThreadPool(12).imap_unordered(fetch_url, portal_list)
     for res in run:
