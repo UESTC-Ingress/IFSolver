@@ -1,3 +1,4 @@
+import re
 import requests
 import os
 import csv
@@ -22,6 +23,7 @@ def getPortals(portals_file):
     with open(portals_file, encoding="utf-8", newline='') as csvfile:
         portal_reader = csv.DictReader(csvfile, skipinitialspace=True)
         for row in portal_reader:
+            row['Name'] = re.sub(r'[\\/:*\?"<>\|]', '', row['Name'])
             if row["Image"]:
                 row['id'] = cnt
                 portal_list.append(row)
