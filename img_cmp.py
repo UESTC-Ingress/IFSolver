@@ -38,7 +38,7 @@ def cmpImage(cmpim, dlist, portal_list):
         "cmp/" + unquote_u(portal_list[pic_match[0]["id"]]["Name"]) + ".jpg")
 
     valid = True
-    if pic_match[0]["matches"] < 200:
+    if pic_match[0]["matches"] / len(ks) < 0.4:
         valid = False
 
     return (unquote_u(portal_list[pic_match[0]["id"]]["Name"]),
