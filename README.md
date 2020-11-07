@@ -8,7 +8,11 @@ A tool to find passcodes of IFS @ Home.
 
 #### Step 1
 
-This step is to check the splitting of images.
+This step is split the Images.
+
+- Right-click and drag to select images.
+- Press Enter to confirm.
+- Press Q to end this step.
 
 ![image](/doc/result_pre.jpg)
 
@@ -35,10 +39,7 @@ Red points are portals with matching errors.
 ```
 [IFSolver] Downloading latest intel package
 [IFSolver] Getting Features
-[IFSolver] Extracting pictures
-Matrix Size: 2
-Thres: 10
-Please check result_pre.jpg, is it correct? (y/n)y
+[IFSolver] Splitting Images
 [IFSolver] Comparing pictures
 Result for pic 0
 Total Keys: 500
@@ -88,8 +89,6 @@ Use `python3 main.py`.
 ### Step 3:
 
 Follow the guide.
-
-You may need to change `matrix_size` and `threshold`.
 
 ### Step 4:
 
