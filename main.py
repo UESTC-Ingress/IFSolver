@@ -3,11 +3,12 @@ import cv2
 from os import path, makedirs
 import json
 
-from feature_utils import *
-from download_utils import *
-from img_finder import *
-from img_cmp import *
-from geo import geo
+from FeatureFileUtils import *
+from DownloadUtils import *
+from CmpUtils import *
+from GeoUtils import geo
+from SplitUtils import *
+
 
 def create_dir():
     if not path.exists('data'):
@@ -19,6 +20,7 @@ def create_dir():
     if not path.exists('cmp'):
         os.makedirs('cmp')
 
+
 def main_download():
     print("[IFSolver] Downloading latest intel package")
     portal_list = getPortals("Portal_Export.csv")
@@ -27,6 +29,7 @@ def main_download():
         if res != "":
             print(res)
     return portal_list
+
 
 def main_features(portal_list):
     print("[IFSolver] Getting Features")
@@ -39,74 +42,31 @@ def main_features(portal_list):
         exit()
     return dlist
 
-def main_preextract(mat_size=2, thres=5):
-    psf = process_mainfile(mat_size, thres)
-    print("Matrix Size: " + str(mat_size))
-    print("Thres: " + str(thres))
-    p = input("Please check result_pre.jpg, is it correct? (y/n)")
-    if p != "y":
-        mat_size = input("New Matrix Size: ")
-        thres = input("New Thres: ")
-        return main_preextract(mat_size, thres)
+
+def main_split():
+    print("[IFSolver] Splitting Images")
+    img = cv2.imread('ifs.jpg', cv2.IMREAD_UNCHANGED)
+    if not path.exists("split.json"):
+        return split_img(img)
     else:
-        return psf
+        with open('split.json') as json_file:
+            spl = json.load(json_file)
+        return split_img(img, pre=spl)
 
-def main_extract(img,cnts):
-    print("[IFSolver] Extracting pictures")
-    row = {}
-    bds = []
-    for idx, f in enumerate(cnts):
-        (x, y, w, h) = cv2.boundingRect(f)
-        if (w*h > 40000):
-            bds.append({"idx": idx, "bd": (x, y, w, h)})
-    return img, bds, row
 
-def main_fix():
-    img, cnts = main_preextract()
-    return main_extract(img, cnts)
+def main_cmp(imgs, portal_list, dlist):
+    print("[IFSolver] Comparing pictures")
+    for idx, img in enumerate(imgs):
+        pname, lat, lng, valid = cmpImage(
+            img, dlist, portal_list)
+
 
 def main():
     portal_list = main_download()
     dlist = main_features(portal_list)
-    img, bds, row = main_fix()
-    print("[IFSolver] Comparing pictures")
-    for idx, f in enumerate(bds):
-        (x, y, w, h) = f["bd"]
-        print("Result for pic " + str(idx))
-        pname, lat, lng, valid = cmpImage(
-            img[y:y+h, x:x+w], dlist, portal_list)
-        if valid:
-            cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 5)
-            cv2.putText(img, 'Lat: ' + lat, (x, y + 40),
-                        cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
-            cv2.putText(img, 'Lng: ' + lng, (x, y + 80),
-                        cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
-        if str(int(x/200)) not in row.keys():
-            row[str(int(x/200))] = [{
-                "id": idx,
-                "name": pname,
-                "y": y/100,
-                "lat": lat,
-                "lng": lng,
-                "valid": valid
-            }]
-        else:
-            row[str(int(x/200))].append({
-                "id": idx,
-                "name": pname,
-                "y": y/100,
-                "lat": lat,
-                "lng": lng,
-                "valid": valid
-            })
-        print("----------------------------")
-    for k in row.keys():
-        row[k] = sorted(row[k], key=lambda kk: kk['y'])
-    with open('result.json', 'w') as fp:
-        json.dump(row, fp)
-    cv2.imwrite("result.jpg", img)
-    print("[IFSolver] Doing geograpjical image generation")
-    geo()
+    splitted_img, imgpos = main_split()
+    main_cmp(splitted_img, portal_list, dlist)
+
 
 if __name__ == "__main__":
     create_dir()

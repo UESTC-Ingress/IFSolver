@@ -8,6 +8,8 @@ def main():
             shutil.rmtree('cmp')
         if os.path.exists('result_pre.jpg'):
             os.remove('result_pre.jpg')
+        if os.path.exists('split.json'):
+            os.remove('split.json')
         if os.path.exists('result.jpg'):
             os.remove('result.jpg')
         if os.path.exists('result_full.jpg'):

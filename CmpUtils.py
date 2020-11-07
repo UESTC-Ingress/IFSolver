@@ -1,7 +1,8 @@
 import cv2
 import os
-from feature_utils import *
+from FeatureFileUtils import *
 from urllib.parse import unquote
+
 
 fast = cv2.ORB_create()
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
@@ -10,7 +11,8 @@ bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 def unquote_u(string: str):
     result = unquote(string, encoding='utf-8', errors='replace')
     if '%u' in result:
-        result = result.replace('%u', '\\u').encode('utf-8').decode('unicode_escape')
+        result = result.replace('%u', '\\u').encode(
+            'utf-8').decode('unicode_escape')
     return result
 
 
@@ -34,11 +36,11 @@ def cmpImage(cmpim, dlist, portal_list):
     matchx, matchy, _ = store_im.shape
     match_im = cv2.resize(match_im, (matchy, matchx))
     store_im = np.hstack((store_im, match_im))
-    cv2.imwrite("cmp/" + unquote_u(portal_list[pic_match[0]["id"]]["Name"])
-                + ".jpg", store_im)
+    cv2.imencode('.jpg', store_im)[1].tofile(
+        "cmp/" + unquote_u(portal_list[pic_match[0]["id"]]["Name"]) + ".jpg")
 
     valid = True
-    if pic_match[0]["matches"] < 200:
+    if pic_match[0]["matches"] / len(ks) < 0.4:
         valid = False
 
     return (unquote_u(portal_list[pic_match[0]["id"]]["Name"]),
@@ -56,7 +58,7 @@ def get_features(pid):
         for kpit in kp:
             cv2.circle(img_color, tuple(map(int, kpit.pt)), 1, (0, 0, 255), 4)
         cv2.imwrite("data_feature_preview/" + str(pid) + ".jpg", img_color)
-        
+
         kpp, desp = pack_keypoint(kp, des)
         write_features('data_feature/' + str(pid) + ".jpg", kpp, desp)
     else:
