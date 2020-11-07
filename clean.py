@@ -1,6 +1,7 @@
 import shutil
 import glob
 import os
+import shutil
 
 def main():
     if input('Do you want to clean generated data? (y/n)') == 'y':
@@ -21,11 +22,11 @@ def main():
             os.remove(filePath)
     if input('Do you want to clean portals dataset? (y/n)') == 'y':
         if os.path.isdir('data'):
-            os.rmtree('data')
+            shutil.rmtree('data')
         if os.path.isdir('data_feature'):
-            os.rmtree('data_feature')
+            shutil.rmtree('data_feature')
         if os.path.isdir('data_feature_preview'):
-            os.rmtree('data_feature_preview')
+            shutil.rmtree('data_feature_preview')
 
 if __name__ == "__main__":
     main()
