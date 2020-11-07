@@ -1,8 +1,8 @@
 import re
 import requests
 import os
-import csv
 
+from collections import OrderedDict
 from multiprocessing.pool import ThreadPool
 
 def fetch_url(entry):
@@ -20,14 +20,24 @@ def fetch_url(entry):
 def getPortals(portals_file):
     portal_list = []
     cnt = 0
-    with open(portals_file, encoding="utf-8", newline='') as csvfile:
-        portal_reader = csv.DictReader(csvfile, skipinitialspace=True)
-        for row in portal_reader:
-            row['Name'] = re.sub(r'[\\/:*\?"<>\|]', '', row['Name'])
-            if row["Image"]:
-                row['id'] = cnt
-                portal_list.append(row)
-                cnt = cnt + 1
+    with open(portals_file, encoding="utf-8", newline='', errors="replace") as csvfile:
+        for line in csvfile:
+            tmp = OrderedDict()
+            match = re.match(r'^\"([\S\s]+)\"\,(\d+\.\d+)\,(\d+.\d+)\,\"(.*)\"$', line)
+            if match:
+                if match.group(4) is not '':
+                    if ',' in match.group(1):
+                        s = re.sub(r'\,', '%u002c', match.group(1))
+                    else:
+                        s = match.group(1)
+                    s =  re.sub(r'[\\/:\*\?\"<>\|]', '', s)
+                    tmp['Name'] = s
+                    tmp['Latitude'] = match.group(2)
+                    tmp['Longitude'] = match.group(3)
+                    tmp['Image'] = match.group(4)
+                    tmp['id'] = cnt
+                    portal_list.append(tmp)
+                    cnt = cnt + 1
     return portal_list
 
 def main():
