@@ -8,6 +8,8 @@ from DownloadUtils import *
 from CmpUtils import *
 from GeoUtils import geo
 from SplitUtils import *
+from EntireCmpUtils import *
+from GridUtils import *
 
 
 def create_dir():
@@ -17,6 +19,10 @@ def create_dir():
         os.makedirs('data_feature')
     if not path.exists('data_feature_preview'):
         os.makedirs('data_feature_preview')
+    if not path.exists('data_feature_sift'):
+        os.makedirs('data_feature_sift')
+    if not path.exists('data_feature_sift_preview'):
+        os.makedirs('data_feature_sift_preview')
     if not path.exists('cmp'):
         os.makedirs('cmp')
 
@@ -31,11 +37,14 @@ def main_download():
     return portal_list
 
 
-def main_features(portal_list):
+def main_features(portal_list, sift=False):
     print("[IFSolver] Getting Features")
     dlist = []
     for portal in portal_list:
-        _, d = get_features(portal['id'])
+        if sift:
+            _, d = get_sift_features(portal['id'])
+        else:
+            _, d = get_features(portal['id'])
         dlist.append(d)
     if not path.exists("ifs.jpg"):
         print("[IFSolver] No IFS jpg found, exit")
@@ -54,20 +63,56 @@ def main_split():
         return split_img(img, pre=spl)
 
 
-def main_cmp(imgs, portal_list, dlist):
+def main_fast_cmp(imgs, portal_list, dlist, imgpos):
+    ret = []
     print("[IFSolver] Comparing pictures")
     for idx, img in enumerate(imgs):
         pname, lat, lng, valid = cmpImage(
             img, dlist, portal_list)
+        ret.append({
+            "name": pname,
+            "lat": lat,
+            "lng": lng,
+            "valid": valid,
+            "pos": imgpos[idx]
+        })
+    return ret
+
+
+def main_cmp(ifs_img, portal_list, dlist):
+    print("[IFSolver] Comparing pictures")
+    for idx, d in enumerate(dlist):
+        res = cmpEntireImage(
+            ifs_img, d, portal_list[idx])
+
+
+def main_grid(portals):
+    rows = grid_judge(portals)
+    with open('result.json', 'w') as outfile:
+        json.dump(rows, outfile, ensure_ascii=False)
+    return rows
 
 
 def main():
     portal_list = main_download()
+    dlist = main_features(portal_list, sift=True)
+    img = cv2.imread('ifs.jpg', cv2.IMREAD_UNCHANGED)
+    main_cmp(img, portal_list, dlist)
+
+
+def main_manual():
+    portal_list = main_download()
     dlist = main_features(portal_list)
     splitted_img, imgpos = main_split()
-    main_cmp(splitted_img, portal_list, dlist)
+    compared_portals = main_fast_cmp(splitted_img, portal_list, dlist, imgpos)
+    main_grid(compared_portals)
 
 
 if __name__ == "__main__":
     create_dir()
-    main()
+    option = input("[IFSolver] Auto(y) or manual(n)?")
+    if option == 'y':
+        main()
+    else:
+        main_manual()
+    geo()
