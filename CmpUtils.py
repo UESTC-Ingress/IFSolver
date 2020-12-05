@@ -25,7 +25,6 @@ def cmpImage(cmpim, dlist, portal_list):
     pic_match = sorted(pic_match, key=lambda k: k['matches'], reverse=True)
 
     print("Total Keys: " + str(len(ks)))
-    print("Max Match Keys: " + str(pic_match[0]["id"]))
     print("Matches: " + str(pic_match[0]["matches"]))
     print("Portal Name: " + unquote_u(portal_list[pic_match[0]["id"]]["Name"]))
     print("Lat: " + portal_list[pic_match[0]["id"]]["Latitude"])
