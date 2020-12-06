@@ -23,7 +23,7 @@ def getPortals(portals_file):
     with open(portals_file, encoding="utf-8", newline='', errors="replace") as csvfile:
         for line in csvfile:
             tmp = OrderedDict()
-            match = re.match(r'^\"([\S\s]+)\"\,(\d+\.\d+)\,(\d+.\d+)\,\"(.*)\"$', line)
+            match = re.match(r'^\"([\S\s]+)\"\,(-?\d+\.\d+)\,(-?\d+.\d+)\,\"(.*)\"$', line)
             if match:
                 if match.group(4) is not '':
                     if ',' in match.group(1):
