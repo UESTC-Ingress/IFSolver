@@ -21,7 +21,7 @@ def unquote_u(string: str):
 
 def cmpEntireImage(ifs_img, d, portalinfo):
     ks, des = sift.detectAndCompute(ifs_img, None)
-    matches = flann.knnMatch(des, d, k=2)
+    matches = flann.knnMatch(d.astype("float32"), des.astype("float32"), k=2)
     matches_len = len(matches)
 
     print("IFS Total Keys: " + str(len(ks)))
@@ -31,8 +31,10 @@ def cmpEntireImage(ifs_img, d, portalinfo):
 
     store_im = ifs_img.copy()
     for mt in matches:
-        kpit = ks[mt.trainIdx]
-        cv2.circle(store_im, tuple(map(int, kpit.pt)), 2, (0, 0, 255), 4)
+        kpit0 = ks[mt[0].trainIdx]
+        kpit1 = ks[mt[1].trainIdx]
+        cv2.circle(store_im, tuple(map(int, kpit0.pt)), 2, (0, 0, 255), 4)
+        #cv2.circle(store_im, tuple(map(int, kpit1.pt)), 2, (0, 255, 0), 4)
     cv2.imwrite("cmp/" + unquote_u(portalinfo["Name"]) + ".jpg", store_im)
     return True
 
