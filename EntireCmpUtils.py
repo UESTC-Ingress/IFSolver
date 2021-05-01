@@ -34,7 +34,7 @@ def cmpEntireImage(ifs_img, d, portalinfo):
         kpit = ks[mt.trainIdx]
         cv2.circle(store_im, tuple(map(int, kpit.pt)), 2, (0, 0, 255), 4)
     cv2.imwrite("cmp/" + unquote_u(portalinfo["Name"]) + ".jpg", store_im)
-    return true
+    return True
 
 
 def get_sift_features(pid):
