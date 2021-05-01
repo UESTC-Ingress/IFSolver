@@ -37,7 +37,7 @@ def main_download():
     return portal_list
 
 
-def main_features(portal_list, sift=False):
+def main_features(portal_list, sift=True):
     print("[IFSolver] Getting Features")
     dlist = []
     for portal in portal_list:
