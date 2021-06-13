@@ -1,118 +1,95 @@
-from multiprocessing.pool import ThreadPool
-import cv2
-from os import path, makedirs
+from modules.utils import DownloadUtil, PreviewUtil
+from modules.extractors import SIFTExtractor
+from modules.matchers import BFMatcher
+from dotenv import load_dotenv
+from os.path import join, dirname
+import os
+from shutil import copyfile
+from modules.utils import DecodeUtil
+import argparse
 import json
 
-from FeatureFileUtils import *
-from DownloadUtils import *
-from CmpUtils import *
-from GeoUtils import geo
-from SplitUtils import *
-from EntireCmpUtils import *
-from GridUtils import *
+load_dotenv(join(dirname(__file__), '.env'))
+
+parser = argparse.ArgumentParser(prog='ifsolver')
+parser.add_argument('--clean', help="Clear generated files",
+                    dest="clean", action='store_true')
+parser.add_argument('--clean-all', help="Clear all files",
+                    dest="cleanall", action='store_true')
+parser.add_argument('--download-only', help="Only download portal images (without IFS image)",
+                    dest="downloadonly", action='store_true')
+parser.add_argument('--no-ifs-image', help="Only download portal images and extract features (without IFS image)",
+                    dest="noifsimage", action='store_true')
+args = parser.parse_args()
 
 
-def create_dir():
-    if not path.exists('data'):
-        os.makedirs('data')
-    if not path.exists('data_feature'):
-        os.makedirs('data_feature')
-    if not path.exists('data_feature_preview'):
-        os.makedirs('data_feature_preview')
-    if not path.exists('data_feature_sift'):
-        os.makedirs('data_feature_sift')
-    if not path.exists('data_feature_sift_preview'):
-        os.makedirs('data_feature_sift_preview')
-    if not path.exists('cmp'):
-        os.makedirs('cmp')
+def init():
+    DownloadUtil.init()
+    SIFTExtractor.init()
+    PreviewUtil.init()
 
 
-def main_download():
-    print("[IFSolver] Downloading latest intel package")
-    portal_list = getPortals("Portal_Export.csv")
-    run = ThreadPool(12).imap_unordered(fetch_url, portal_list)
-    for res in run:
-        if res != "":
-            print(res)
-    return portal_list
-
-
-def main_features(portal_list, sift=True):
-    print("[IFSolver] Getting Features")
-    dlist = []
-    for portal in portal_list:
-        if sift:
-            _, d = get_sift_features(portal['id'])
-        else:
-            _, d = get_features(portal['id'])
-        dlist.append(d)
-    if not path.exists("ifs.jpg"):
-        print("[IFSolver] No IFS jpg found, exit")
-        exit()
-    return dlist
-
-
-def main_split():
-    print("[IFSolver] Splitting Images")
-    img = cv2.imread('ifs.jpg', cv2.IMREAD_UNCHANGED)
-    if not path.exists("split.json"):
-        return split_img(img)
-    else:
-        with open('split.json') as json_file:
-            spl = json.load(json_file)
-        return split_img(img, pre=spl)
-
-
-def main_fast_cmp(imgs, portal_list, dlist, imgpos):
-    ret = []
-    print("[IFSolver] Comparing pictures")
-    for idx, img in enumerate(imgs):
-        pname, lat, lng, valid = cmpImage(
-            img, dlist, portal_list)
-        ret.append({
-            "name": pname,
-            "lat": lat,
-            "lng": lng,
-            "valid": valid,
-            "pos": imgpos[idx]
-        })
-    return ret
-
-
-def main_cmp(ifs_img, portal_list, dlist):
-    print("[IFSolver] Comparing pictures")
-    for idx, d in enumerate(dlist):
-        res = cmpEntireImage(
-            ifs_img, d, portal_list[idx])
-
-
-def main_grid(portals):
-    rows = grid_judge(portals)
-    with open('result.json', 'w') as outfile:
-        json.dump(rows, outfile, ensure_ascii=False)
-    return rows
-
-
-def main():
-    portal_list = main_download()
-    dlist = main_features(portal_list, sift=True)
-    img = cv2.imread('ifs.jpg', cv2.IMREAD_UNCHANGED)
-    main_cmp(img, portal_list, dlist)
-
-
-def main_manual():
-    portal_list = main_download()
-    dlist = main_features(portal_list)
-    splitted_img, imgpos = main_split()
-    compared_portals = main_fast_cmp(splitted_img, portal_list, dlist, imgpos)
-    main_grid(compared_portals)
+def main(extract=True, match=True, draw=True, ocr=True):
+    print("[STEP] Fetching Data...")
+    portalList = DownloadUtil.fetchData()
+    if extract:
+        print("[STEP] Extracting Features...")
+        dList = []
+        for portal in portalList:
+            kp, d = SIFTExtractor.getSIFTFeatures(portal['id'])
+            dList.append(d)
+        if match:
+            print("[STEP] Matching Features...")
+            kpFull, dFull = SIFTExtractor.getSIFTFeaturesFullPhoto()
+            matchedList = []
+            matched_cnt = 0
+            if not os.path.exists('flag.matched.json'):
+                if os.path.exists('result.match.json'):
+                    with open('result.match.json') as jf:
+                        j = json.load(jf)
+                        matched_cnt = j[-1]["portalID"]
+                        print("Recovered from ID {}".format(matched_cnt))
+                for idx, d in enumerate(dList):
+                    if idx >= matched_cnt:
+                        if idx % 50 == 0:
+                            print("Current progress: {} images.".format(idx))
+                        bestMatches = BFMatcher.matchDescriptor(d, dFull)
+                        if len(bestMatches) > 3:
+                            print("Found match: ID [{}] Name {}".format(
+                                idx, next(DecodeUtil.unquoteName(it["Name"]) for it in portalList if it["id"] == idx)))
+                            kp, _ = SIFTExtractor.getSIFTFeatures(str(idx))
+                            center = BFMatcher.getMatchedCenter(
+                                str(idx) + ".jpg", kp, kpFull, bestMatches)
+                            if center != None:
+                                PreviewUtil.saveMatchedFeaturePreview(
+                                    str(idx) + ".jpg", kp, kpFull, bestMatches)
+                                matchedList.append({
+                                    "portalID": idx,
+                                    "center": {"x": center[0], "y": center[1]}
+                                })
+                                with open("result.match.json", "w") as f:
+                                    json.dump(matchedList, f)
+                                PreviewUtil.saveMatchedCenter(matchedList)
+                with open("result.match.json", "w") as f:
+                    json.dump(matchedList, f)
+                with open("flag.matched.json", "w") as f:
+                    json.dump({}, f)
+                PreviewUtil.saveMatchedCenter(matchedList)
+            else:
+                with open("result.match.json") as f:
+                    matchedList = json.load(f)
 
 
 if __name__ == "__main__":
-    create_dir()
-    option = input("[IFSolver] Auto(y) or manual(n)?")
-    if option == 'y':
-        main()
+    if args.clean:
+        pass
+    elif args.cleanall:
+        pass
     else:
-        main_manual()
-    geo()
+        init()
+        if args.downloadonly:
+            main(extract=False)
+        elif args.noifsimage:
+            main(match=False)
+        else:
+            main()
