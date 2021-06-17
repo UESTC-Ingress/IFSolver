@@ -54,27 +54,26 @@ def main(extract=True, match=True, draw=True, ocr=True):
                         if idx % 50 == 0:
                             print("Current progress: {} images.".format(idx))
                         bestMatches = BFMatcher.matchDescriptor(d, dFull)
-                        if len(bestMatches) > 3:
+                        if len(bestMatches) > 1:
                             print("Found match: ID [{}] Name {}".format(
                                 idx, next(DecodeUtil.unquoteName(it["Name"]) for it in portalList if it["id"] == idx)))
                             kp, _ = SIFTExtractor.getSIFTFeatures(str(idx))
-                            center = BFMatcher.getMatchedCenter(
+                            centers = BFMatcher.getMatchedCenterMultiple(
                                 str(idx) + ".jpg", kp, kpFull, bestMatches)
-                            if center != None:
-                                PreviewUtil.saveMatchedFeaturePreview(
-                                    str(idx) + ".jpg", kp, kpFull, bestMatches)
+                            if len(centers) != 0:
                                 matchedList.append({
                                     "portalID": idx,
-                                    "center": {"x": center[0], "y": center[1]}
+                                    "centers": [{"x": center[0], "y": center[1]} for center in centers]
                                 })
                                 with open("result.match.json", "w") as f:
                                     json.dump(matchedList, f)
-                                PreviewUtil.saveMatchedCenter(matchedList)
+                                PreviewUtil.saveMatchedCenterMultiple(
+                                    matchedList)
                 with open("result.match.json", "w") as f:
                     json.dump(matchedList, f)
                 with open("flag.matched.json", "w") as f:
                     json.dump({}, f)
-                PreviewUtil.saveMatchedCenter(matchedList)
+                PreviewUtil.saveMatchedCenterMultiple(matchedList)
             else:
                 with open("result.match.json") as f:
                     matchedList = json.load(f)
