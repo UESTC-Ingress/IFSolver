@@ -29,3 +29,12 @@ def saveMatchedCenterMultiple(matchedList):
             imgFull = cv2.circle(
                 imgFull, (center["x"], center["y"]), 5, (0, 255, 255), 8)
     cv2.imwrite("data_features_matches/ifs.jpg", imgFull)
+
+
+def saveGridInfo(matchedGridList):
+    imgFull = cv2.imread("data_features_matches/ifs.jpg")
+    for idx, colList in enumerate(matchedGridList):
+        for center in colList:
+            imgFull = cv2.putText(
+                imgFull, str(idx), (center["x"], center["y"]), cv2.FONT_HERSHEY_COMPLEX, 4, (0, 0, 255), 15)
+    cv2.imwrite("data_features_matches/ifs-grid.jpg", imgFull)

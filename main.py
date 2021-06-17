@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from os.path import join, dirname
 import os
 from shutil import copyfile
-from modules.utils import DecodeUtil
+from modules.utils import DecodeUtil, GridClusterUtil
 import argparse
 import json
 
@@ -77,6 +77,10 @@ def main(extract=True, match=True, draw=True, ocr=True):
             else:
                 with open("result.match.json") as f:
                     matchedList = json.load(f)
+            print("[STEP] Clustering Grid...")
+            matchedGridList = GridClusterUtil.Cluster(matchedList)
+            print(matchedGridList)
+            PreviewUtil.saveGridInfo(matchedGridList)
 
 
 if __name__ == "__main__":

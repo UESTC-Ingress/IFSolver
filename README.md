@@ -16,7 +16,7 @@ A tool to find passcodes of IFS @ Home.
 [x] Fetch features of portal images.
 [x] Match portal images and puzzle image.
 [x] Multiple match.
-[ ] Clustering for grid layout.
+[x] Clustering for grid layout.
 [ ] Generate glyphs.
 [ ] OCR.
 
