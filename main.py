@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from os.path import join, dirname
 import os
 from shutil import copyfile
-from modules.utils import DecodeUtil, GridClusterUtil
+from modules.utils import DecodeUtil, GridClusterUtil, GeoUtil
 import argparse
 import json
 
@@ -46,8 +46,8 @@ def main(extract=True, match=True, draw=True, ocr=True):
             if not os.path.exists('flag.matched.json'):
                 if os.path.exists('result.match.json'):
                     with open('result.match.json') as jf:
-                        j = json.load(jf)
-                        matched_cnt = j[-1]["portalID"]
+                        matchedList = json.load(jf)
+                        matched_cnt = matchedList[-1]["portalID"]
                         print("Recovered from ID {}".format(matched_cnt))
                 for idx, d in enumerate(dList):
                     if idx >= matched_cnt:
@@ -55,7 +55,7 @@ def main(extract=True, match=True, draw=True, ocr=True):
                             print("Current progress: {} images.".format(idx))
                         bestMatches = BFMatcher.matchDescriptor(d, dFull)
                         if len(bestMatches) > 1:
-                            print("Found match: ID [{}] Name {}".format(
+                            print("Processing possible match: ID [{}] Name {}".format(
                                 idx, next(DecodeUtil.unquoteName(it["Name"]) for it in portalList if it["id"] == idx)))
                             kp, _ = SIFTExtractor.getSIFTFeatures(str(idx))
                             centers = BFMatcher.getMatchedCenterMultiple(
@@ -79,8 +79,9 @@ def main(extract=True, match=True, draw=True, ocr=True):
                     matchedList = json.load(f)
             print("[STEP] Clustering Grid...")
             matchedGridList = GridClusterUtil.Cluster(matchedList)
-            print(matchedGridList)
             PreviewUtil.saveGridInfo(matchedGridList)
+            print("[STEP] Generating Final Image...")
+            GeoUtil.GenGeoImage(matchedGridList, portalList)
 
 
 if __name__ == "__main__":
