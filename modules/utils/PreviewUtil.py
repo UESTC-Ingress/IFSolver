@@ -28,6 +28,8 @@ def saveMatchedCenterMultiple(matchedList):
         for center in matched["centers"]:
             imgFull = cv2.circle(
                 imgFull, (center["x"], center["y"]), 5, (0, 255, 255), 8)
+            imgFull = cv2.putText(
+                imgFull, str(matched["portalID"]), (center["x"], center["y"]), cv2.FONT_HERSHEY_COMPLEX, 3, (0, 0, 255), 8)
     cv2.imwrite("data_features_matches/ifs.jpg", imgFull)
 
 

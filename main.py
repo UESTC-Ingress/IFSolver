@@ -77,6 +77,7 @@ def main(extract=True, match=True, draw=True, ocr=True):
             else:
                 with open("result.match.json") as f:
                     matchedList = json.load(f)
+                PreviewUtil.saveMatchedCenterMultiple(matchedList)
             print("[STEP] Clustering Grid...")
             matchedGridList = GridClusterUtil.Cluster(matchedList)
             PreviewUtil.saveGridInfo(matchedGridList)

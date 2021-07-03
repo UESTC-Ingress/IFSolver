@@ -24,6 +24,11 @@ def Cluster(matches):
     imageCenterList = [sorted(x, key=lambda k: k['y'])
                        for x in imageCenterList]
     imageCenterList = sorted(imageCenterList, key=lambda k: k[0]['x'])
+    for imageCenters in imageCenterList:
+        for idx in range(len(imageCenters) - 1):
+            if (abs(imageCenters[idx]["y"] - imageCenters[idx + 1]["y"]) < 50) and imageCenters[idx]["portalID"] != imageCenters[idx + 1]["portalID"]:
+                print("[Warning] Please resolve conflict between image ID {} and {} manually!".format(
+                    str(imageCenters[idx]["portalID"]), str(imageCenters[idx + 1]["portalID"])))
     return imageCenterList
 
 

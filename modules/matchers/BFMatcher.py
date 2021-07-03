@@ -41,19 +41,22 @@ def getMatchedCenterMultiple(imgFile, kp, kpFull, matches):
         h1 = abs(dstListY[0][0][1] - dstListY[3][0][1])
         h2 = abs(dstListY[1][0][1] - dstListY[2][0][1])
 
-        if (w1/w2) < 2 and (w1/w2) > 0.5 and (h1/h2) < 2 and (h1/h2) > 0.5 and (h1/w1) < 8 and (h1/w1) > 0.125:
-            MM = cv2.moments(dst)
-            cX = int(MM["m10"] / MM["m00"])
-            cY = int(MM["m01"] / MM["m00"])
+        try:
+            if (w1/w2) < 2 and (w1/w2) > 0.5 and (h1/h2) < 2 and (h1/h2) > 0.5 and (h1/w1) < 8 and (h1/w1) > 0.125:
+                MM = cv2.moments(dst)
+                cX = int(MM["m10"] / MM["m00"])
+                cY = int(MM["m01"] / MM["m00"])
 
-            centers.append((cX, cY))
+                centers.append((cX, cY))
 
-            dst += (w, 0)
-            imgMatches = cv2.polylines(
-                imgMatches, [np.int32(dst)], True, (0, 0, 255), 3, cv2.LINE_AA)
+                dst += (w, 0)
+                imgMatches = cv2.polylines(
+                    imgMatches, [np.int32(dst)], True, (0, 0, 255), 3, cv2.LINE_AA)
+        except:
+            pass
 
         mask = mask.ravel().tolist()
-        matches = np.array(matches)[np.logical_not(mask)].tolist()   
+        matches = np.array(matches)[np.logical_not(mask)].tolist()
     print("Found {} matched pictures for {}".format(len(centers), imgFile))
     if len(centers) >= 1:
         cv2.imwrite("data_features_matches/" + imgFile, imgMatches)
