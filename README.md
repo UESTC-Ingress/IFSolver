@@ -23,11 +23,11 @@ A tool to find passcodes of IFS @ Home.
 
 ## Status
 
-[x] Download images of portals.
-[x] Fetch features of portal images.
-[x] Match portal images and puzzle image.
-[x] Multiple match.
-[x] Clustering for grid layout.
-[x] Generate glyphs.
-[ ] OCR.
-[ ] Automatic conflict resolution.
+- [x] Download images of portals.
+- [x] Fetch features of portal images.
+- [x] Match portal images and puzzle image.
+- [x] Multiple match.
+- [x] Clustering for grid layout.
+- [x] Generate glyphs.
+- [ ] OCR.
+- [ ] Automatic conflict resolution.
