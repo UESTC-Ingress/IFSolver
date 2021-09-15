@@ -4,9 +4,10 @@ from modules.matchers import BFMatcher
 from dotenv import load_dotenv
 from os.path import join, dirname
 import os
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from modules.utils import DecodeUtil, GridClusterUtil, GeoUtil
 import argparse
+import glob
 import json
 
 load_dotenv(join(dirname(__file__), '.env'))
@@ -29,7 +30,7 @@ def init():
     PreviewUtil.init()
 
 
-def main(extract=True, match=True, draw=True, ocr=True):
+def main(extract=True, match=True):
     print("[STEP] Fetching Data...")
     portalList = DownloadUtil.fetchData()
     if extract:
@@ -84,12 +85,28 @@ def main(extract=True, match=True, draw=True, ocr=True):
             print("[STEP] Generating Final Image...")
             GeoUtil.GenGeoImage(matchedGridList, portalList)
 
+def del_if_dir_exist(dir):
+    if os.path.exists(dir) and os.path.isdir(dir):
+        rmtree(dir)
+
+def clean_dir():
+    del_if_dir_exist("data")
+    del_if_dir_exist("data_features")
+    del_if_dir_exist("data_features_matches")
+    del_if_dir_exist("data_features_preview")
+    fl = glob.glob('result_*.jpg')
+    for fp in fl:
+        os.remove(fp)
+    fl = glob.glob('*.json')
+    for fp in fl:
+        os.remove(fp)
 
 if __name__ == "__main__":
     if args.clean:
-        pass
+        clean_dir()
     elif args.cleanall:
-        pass
+        del_if_dir_exist("input")
+        clean_dir()
     else:
         init()
         if args.downloadonly:

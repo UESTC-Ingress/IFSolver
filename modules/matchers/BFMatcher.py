@@ -13,7 +13,7 @@ def matchDescriptor(descriptor, descriptorFull):
 
 def getMatchedCenterMultiple(imgFile, kp, kpFull, matches):
     img = cv2.imread("data/" + imgFile)
-    imgFull = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE"))
+    imgFull = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"))
     imgMatches = cv2.drawMatchesKnn(img, kp, imgFull, kpFull, matches, None)
     centers = []
     while True:

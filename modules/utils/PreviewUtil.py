@@ -16,14 +16,14 @@ def saveImageFeaturePreview(imgFile, kp):
 
 
 def saveFullImageFeaturePreview(kp):
-    img = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE"))
+    img = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"))
     for kpit in kp:
         cv2.circle(img, tuple(map(int, kpit.pt)), 1, (0, 0, 255), 4)
     cv2.imwrite("data_features_preview/ifs.jpg", img)
 
 
 def saveMatchedCenterMultiple(matchedList):
-    imgFull = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE"))
+    imgFull = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"))
     for matched in matchedList:
         for center in matched["centers"]:
             imgFull = cv2.circle(

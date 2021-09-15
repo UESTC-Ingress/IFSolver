@@ -52,8 +52,8 @@ def getPortals(portalListFile):
 
 
 def fetchData():
-    portalList = getPortals(os.environ.get("PORTAL_LIST_FILE"))
-    run = ThreadPool(int(os.environ.get("DOWNLOAD_THREADS")
+    portalList = getPortals(os.environ.get("PORTAL_LIST_FILE", "Portal_Export.csv"))
+    run = ThreadPool(int(os.environ.get("DOWNLOAD_THREADS", 32)
                          )).imap_unordered(fetch_url, portalList)
     for res in run:
         if res != "":
