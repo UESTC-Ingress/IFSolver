@@ -15,6 +15,9 @@ def init():
 def getSIFTFeaturesFullPhoto():
     if not os.path.exists('data_features/ifs.jpg.npy'):
         img = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"), 0)
+        if img is None:
+            print("[Error] Could not read IFS photo file. Did you forget to place it to input/ifs.jpg?")
+            exit(1)
         kp, des = sift.detectAndCompute(img, None)
 
         PreviewUtil.saveFullImageFeaturePreview(kp)
