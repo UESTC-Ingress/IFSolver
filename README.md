@@ -4,12 +4,28 @@ A tool to find passcodes of IFS @ Home.
 
 > This version of IFSolver is currently WIP.
 
+## Requirements
+
+`pip install -r requirements.txt`
+
+virtualenv is strongly recommended.
+
 ## Usage
 
 - Put `Portal_Export.csv` into `./input`.
-- Put `ifs.jpg` into `./input`. (Optional)
-- Run `python3 main.py`. (With optional args)
+
+  You can grab portal list with userscripts, like [Portal CSV Exporter](http://github.com/Zetaphor/IITC-Ingress-Portal-CSV-Export) or [IITC plugin: Portal Multi Export](https://iitc.aradiv.de/plugin/37/multi_export.user.js). Modification of the userscript may be required.
+
+- Put `ifs.jpg` into `./input`. (Optional if you use `--download-only` arg)
+- Run `python3 main.py`. (With optional args, see below)
 - Resolve conflicts in `result.match.json` according to images in `data_features_preview/` manually and run again. (Optional)
+
+### Args
+
+- `--clean`: Clear generated files
+- `--clean-all`: Clear all files
+- `--download-only`: Only download portal images (without IFS image)
+- `--no-ifs-image`: Only download portal images and extract features (without IFS image)
 
 ## Generated Files
 
