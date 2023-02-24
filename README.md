@@ -2,8 +2,6 @@
 
 A tool to find passcodes of IFS @ Home.
 
-> This version of IFSolver is currently WIP.
-
 ## Requirements
 
 `pip install -r requirements.txt`
@@ -22,10 +20,12 @@ virtualenv is strongly recommended.
 
 ### Args
 
-- `--clean`: Clear generated files
-- `--clean-all`: Clear all files
+- `--clean-result`: Clear result files (passcode image and json result files)
+- `--clean`: Clear generated files (including result files)
+- `--clean-all`: Clear all files (including input files)
 - `--download-only`: Only download portal images (without IFS image)
 - `--no-ifs-image`: Only download portal images and extract features (without IFS image)
+- `--no-preview`: Do not generate feature previewing images for manual intervention
 
 ## Generated Files
 

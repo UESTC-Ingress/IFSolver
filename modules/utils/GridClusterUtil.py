@@ -8,9 +8,9 @@ def Cluster(matches):
     for match in matches:
         for center in match["centers"]:
             centerXList.append(int(center["x"]))
-    nClusters = int(input("Number of clusters: "))
+    nClusters = int(input("Number of clusters (length of passcode): "))
     centerXList = np.array(centerXList).reshape(-1, 1)
-    kmeans = KMeans(n_clusters=nClusters).fit(centerXList)
+    kmeans = KMeans(n_clusters=nClusters, n_init='auto').fit(centerXList)
 
     imageCenterList = [[] for x in range(nClusters)]
 

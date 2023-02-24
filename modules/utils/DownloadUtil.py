@@ -1,6 +1,7 @@
 import re
 import requests
 import os
+import progressbar
 
 from collections import OrderedDict
 from multiprocessing.pool import ThreadPool
@@ -14,7 +15,7 @@ def init():
 
 
 def fetch_url(entry):
-    ret = ""
+    ret = -1
     path = 'data/' + str(entry["id"]) + ".jpg"
     if not os.path.exists(path):
         r = requests.get(entry["Image"], stream=True)
@@ -22,7 +23,7 @@ def fetch_url(entry):
             with open(path, 'wb') as f:
                 for chunk in r:
                     f.write(chunk)
-        ret = "Downloaded image id " + str(entry["id"])
+        ret = entry["id"]
     return ret
 
 
@@ -50,19 +51,29 @@ def getPortals(portalListFile):
                         portalList.append(tmp)
                         cnt = cnt + 1
     except FileNotFoundError:
-        print(f"[ERROR] File not found: input/{portalListFile}. Please place \"{portalListFile}\" to proper location.")
+        print(
+            f"[ERROR] File not found: input/{portalListFile}. Please place \"{portalListFile}\" to proper location.")
         exit(1)
     return portalList
 
 
 def fetchData():
-    portalList = getPortals(os.environ.get("PORTAL_LIST_FILE", "Portal_Export.csv"))
+    portalList = getPortals(os.environ.get(
+        "PORTAL_LIST_FILE", "Portal_Export.csv"))
+    bar = progressbar.ProgressBar(widgets=[
+        'Downloading Image: ',
+        progressbar.Bar(),
+        ' ',
+        progressbar.Counter(format='%(value)d/%(max_value)d'),
+    ], max_value=len(portalList))
+    processed = -1
     while True:
         run = ThreadPool(int(os.environ.get("DOWNLOAD_THREADS", 32)
                              )).imap_unordered(fetch_url, portalList)
         for res in run:
-            if res != "":
-                print(res)
+            processed = processed + 1
+            bar.update(processed)
         if len(portalList) == len([name for name in os.listdir('data') if os.path.isfile(os.path.join('data', name))]):
             break
+    bar.finish()
     return portalList

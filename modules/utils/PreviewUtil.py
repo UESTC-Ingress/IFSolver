@@ -2,13 +2,21 @@ import cv2
 import os
 import numpy as np
 
+preview_enabled = True
 
-def init():
-    if not os.path.exists('data_features_matches'):
-        os.makedirs('data_features_matches')
+def init(set_enabled=True):
+    global preview_enabled
+    preview_enabled = set_enabled
+    if set_enabled:
+        if not os.path.exists('data_features_matches'):
+            os.makedirs('data_features_matches')
+        if not os.path.exists('data_features_preview'):
+            os.makedirs('data_features_preview')
 
 
 def saveImageFeaturePreview(imgFile, kp):
+    if not preview_enabled:
+        return
     img = cv2.imread("data/" + imgFile)
     for kpit in kp:
         cv2.circle(img, tuple(map(int, kpit.pt)), 1, (0, 0, 255), 4)
@@ -16,6 +24,8 @@ def saveImageFeaturePreview(imgFile, kp):
 
 
 def saveFullImageFeaturePreview(kp):
+    if not preview_enabled:
+        return
     img = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"))
     for kpit in kp:
         cv2.circle(img, tuple(map(int, kpit.pt)), 1, (0, 0, 255), 4)
@@ -23,7 +33,10 @@ def saveFullImageFeaturePreview(kp):
 
 
 def saveMatchedCenterMultiple(matchedList):
-    imgFull = cv2.imread("input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"))
+    if not preview_enabled:
+        return
+    imgFull = cv2.imread(
+        "input/" + os.environ.get("IFS_PHOTO_FILE", "ifs.jpg"))
     for matched in matchedList:
         for center in matched["centers"]:
             imgFull = cv2.circle(
@@ -34,6 +47,8 @@ def saveMatchedCenterMultiple(matchedList):
 
 
 def saveGridInfo(matchedGridList):
+    if not preview_enabled:
+        return
     imgFull = cv2.imread("data_features_matches/ifs.jpg")
     for idx, colList in enumerate(matchedGridList):
         for center in colList:

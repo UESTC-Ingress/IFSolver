@@ -57,7 +57,7 @@ def getMatchedCenterMultiple(imgFile, kp, kpFull, matches):
 
         mask = mask.ravel().tolist()
         matches = np.array(matches)[np.logical_not(mask)].tolist()
-    print("Found {} matched pictures for {}".format(len(centers), imgFile))
+    print("\tFound {} matched pictures for {}".format(len(centers), imgFile))
     if len(centers) >= 1:
         cv2.imwrite("data_features_matches/" + imgFile, imgMatches)
     return centers

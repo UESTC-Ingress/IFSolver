@@ -8,8 +8,6 @@ sift = cv2.SIFT_create()
 def init():
     if not os.path.exists('data_features'):
         os.makedirs('data_features')
-    if not os.path.exists('data_features_preview'):
-        os.makedirs('data_features_preview')
 
 
 def getSIFTFeaturesFullPhoto():
@@ -42,7 +40,6 @@ def getSIFTFeatures(pid):
         kpp, desp = FeatureFileUtil.packKeypoint(kp, des)
         FeatureFileUtil.writeFeatures(
             'data_features/' + str(pid) + ".jpg", kpp, desp)
-        print("Extracted image id {}".format(pid))
     else:
         fr = FeatureFileUtil.readFeatures(
             'data_features/' + str(pid) + ".jpg.npy")
